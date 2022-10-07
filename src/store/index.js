@@ -5,7 +5,8 @@ const store = createStore({
   state: {
     user: null,
     repository :null,
-    userUrl :"https://api.github.com/users/"
+    userUrl :"https://api.github.com/users/",
+    info: ""
   },
   mutations: {
     getUser(state,payload){
@@ -22,7 +23,6 @@ const store = createStore({
         const repos = await fetch(`${state.userUrl}${search}/repos`)
         const allUser = await user.json()
         const allRepos = await repos.json()
-        console.log(allUser);
         commit("getUser", allUser)
         commit("getRepos", allRepos)
       } catch (error) {
@@ -31,8 +31,15 @@ const store = createStore({
     }
   },
   getters: {
-    setUser(state) {
-      return state.user
+    sort(state){
+      if(state.repository != null){
+        return state.repository.sort((prev,next)=>{
+          let i = 1
+          if (prev[state.info]<next[state.info]) {
+            return -i
+          }
+        })
+      }
     }
   },
 });
