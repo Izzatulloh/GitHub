@@ -2,13 +2,14 @@
   <div class="container">
     <div class="sort__div">
       <button
-        v-if="user"
+        
         class="sort__btn"
         v-for="(btn, index) in btns"
         :key="btn.name"
         :class="{ active: active == index }"
         @click="sortRepos(index, btn.url)"
-      >
+        v-if="user"
+        >
         {{ btn.name }}
       </button>
     </div>
