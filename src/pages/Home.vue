@@ -1,12 +1,23 @@
 <template>
   <div class="container">
-    <button>{{}}</button>
+    <div class="sort__div">
+      <button
+        v-if="user"
+        class="sort__btn"
+        v-for="(btn, index) in btns"
+        :key="btn.name"
+        :class="{ active: active == index }"
+        @click="sortRepos(index, btn.url)"
+      >
+        {{ btn.name }}
+      </button>
+    </div>
     <div class="repos">
       <div v-for="repos in sort" :key="repos.id">
         <div class="repos__card">
           <div class="repos__info">
             <h1 class="repos__title">Repository name :</h1>
-            <a class="repos__title" :href="repos.html_url" target="_blank">{{
+            <a class="repos__title" :href="repos.homepage" target="_blank">{{
               repos.name
             }}</a>
           </div>
@@ -17,6 +28,12 @@
           <p class="language">
             Language: <span>{{ repos.language }}</span>
           </p>
+          <a
+            class="user__left-btn repos_visit"
+            :href="repos.html_url"
+            target="_blank"
+            >Visit Repos</a
+          >
           <p class="repos__data">
             {{ new Date(repos.created_at).toLocaleDateString() }}
           </p>
@@ -27,22 +44,30 @@
 </template>
 <script>
 import store from "@/store";
-import { mapActions, mapGetters, mapState } from "vuex";
+import { mapActions, mapGetters, mapState, mapMutations } from "vuex";
 export default {
   data() {
     return {
-      btns:[{name:"Name",url:""}]
+      active: 0,
+      btns: [
+        { name: "Name", url: "name" },
+        { name: "Stars", url: "stargazers_count" },
+        { name: "Date", url: "created_at" },
+      ],
     };
   },
   computed: {
     ...mapState(["repository"]),
     ...mapGetters(["sort"]),
+    ...mapState(["user"]),
   },
   methods: {
-    ...mapActions(["getRepos"]),
-  },
-  mounted() {
-    this.getRepos();
+    ...mapActions(["sort"]),
+    ...mapMutations(["getSort"]),
+    sortRepos(index, url) {
+      this.active = index;
+      this.getSort(url);
+    },
   },
 };
 </script>

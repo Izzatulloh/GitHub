@@ -1,42 +1,55 @@
 import {
   createStore
 } from "vuex";
+import axios from 'axios'
 const store = createStore({
   state: {
     user: null,
-    repository :null,
-    userUrl :"https://api.github.com/users/",
-    info: ""
+    repository: null,
+    userUrl: "https://api.github.com/users/",
+    info: "name"
   },
   mutations: {
-    getUser(state,payload){
+    getSort(state, payload) {
+      state.info = payload
+
+    },
+    getUser(state, payload) {
       state.user = payload
     },
-    getRepos(state,payload){
+    getRepos(state, payload) {
       state.repository = payload
+    },
+    getError(state,error){
+      if (state.repository.status == 403) {
+        state.error = "Sizni limitingiz tugadi biror soat kutib turing..."
+      }else{
+        state.error = "Nimadir noto'g'ri ketib qoldi"
+      }
     }
   },
   actions: {
-    async getUser({commit,state},search) {
+    async getUser({
+      commit,
+      state
+    }, search) {
       try {
-        const user = await fetch(`${state.userUrl}${search}`)
-        const repos = await fetch(`${state.userUrl}${search}/repos`)
-        const allUser = await user.json()
-        const allRepos = await repos.json()
-        commit("getUser", allUser)
-        commit("getRepos", allRepos)
+        const user = await axios.get(`${state.userUrl}${search}`)
+        const repos = await axios.get(`${state.userUrl}${search}/repos`)
+        commit("getUser", user.data)
+        commit("getRepos", repos.data)
       } catch (error) {
-        console.log("Qandaydir xatolik yuz berdi");
+       commit("getError",error)
       }
     }
   },
   getters: {
-    sort(state){
-      if(state.repository != null){
-        return state.repository.sort((prev,next)=>{
-          let i = 1
-          if (prev[state.info]<next[state.info]) {
-            return -i
+    sort(state) {
+      if (state.repository != null) {
+        return state.repository.sort((prev, next) => {
+          let a = 1
+          if (prev[state.info] < next[state.info]) {
+            return -a
           }
         })
       }

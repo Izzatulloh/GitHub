@@ -10,6 +10,7 @@
     <img class="close" src="@/assets/images/close.svg" alt="" @click="close" />
   </label>
   <button class="btn" @click="setUser">Search</button>
+
   <div class="user" v-if="user">
     <div class="user__left">
       <img :src="user.avatar_url" alt="" />
@@ -31,7 +32,7 @@
       </p>
     </div>
   </div>
-  <p v-else>Qidir</p>
+  <p v-else class="user__not">Ma'lumot Yo'q</p>
   <Home/>
 </template>
 
@@ -56,11 +57,6 @@ export default {
     },
     computed: {
         ...mapState(["user"]),
-    },
-    mounted() {
-        this.getUser();
-        console.log(this.user)
-        
     },
     components: { Home }
 };
