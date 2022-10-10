@@ -1,20 +1,19 @@
 <template>
   <div class="container">
-    <div class="sort__div">
+    <div class="sort__div" v-if="user">
       <button
-        
         class="sort__btn"
         v-for="(btn, index) in btns"
         :key="btn.name"
         :class="{ active: active == index }"
         @click="sortRepos(index, btn.url)"
-        v-if="user"
-        >
+      >
         {{ btn.name }}
       </button>
     </div>
     <div class="repos">
       <div v-for="repos in sort" :key="repos.id">
+        
         <div class="repos__card">
           <div class="repos__info">
             <h1 class="repos__title">Repository name :</h1>
